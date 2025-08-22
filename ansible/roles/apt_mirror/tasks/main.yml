@@ -1,0 +1,28 @@
+---
+- name: Install apt-mirror
+  apt:
+    name: apt-mirror
+    state: present
+
+- name: Configure apt-mirror
+  template:
+    src: mirror.list.j2
+    dest: /etc/apt/mirror.list
+
+- name: Run apt-mirror in background
+  shell: nohup apt-mirror > /var/spool/apt-mirror/var/apt-mirror.log 2>&1 &
+  args:
+    creates: /var/spool/apt-mirror/var/apt-mirror.lock
+
+- name: Expose mirror via Apache
+  file:
+    src: /var/spool/apt-mirror/mirror
+    dest: /var/www/html/mirror
+    state: link
+    force: yes
+
+- name: Ensure Apache is running
+  systemd:
+    name: apache2
+    state: started
+    enabled: yes

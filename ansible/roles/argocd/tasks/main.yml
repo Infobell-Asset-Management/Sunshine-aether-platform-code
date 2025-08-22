@@ -1,0 +1,6 @@
+---
+- name: Create argocd namespace
+  shell: kubectl create namespace argocd --kubeconfig /etc/kubernetes/admin.conf || true
+
+- name: Apply ArgoCD manifests
+  shell: kubectl apply -f /opt/aether/manifests/argocd/ --kubeconfig /etc/kubernetes/admin.conf

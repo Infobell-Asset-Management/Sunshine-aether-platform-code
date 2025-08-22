@@ -1,0 +1,5 @@
+---
+- name: Ensure kubeadm config is present
+  copy:
+    src: ../../../../kubeadm/init-config.yaml
+    dest: /tmp/init-config.yaml

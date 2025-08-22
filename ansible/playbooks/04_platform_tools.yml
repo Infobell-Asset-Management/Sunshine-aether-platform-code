@@ -1,0 +1,38 @@
+---
+- name: Install Platform Tools
+  hosts: controller
+  become: yes
+  vars_files:
+    - ../group_vars/all.yml
+  roles:
+    - argocd
+    - linkerd
+    - monitoring
+    - logging
+    - velero_minio
+  tasks:
+    - name: Stage manifests to /opt/aether/manifests
+      copy:
+        src: ../../manifests/
+        dest: /opt/aether/manifests/
+        mode: 0755
+
+    - name: Install ArgoCD
+      include_role:
+        name: argocd
+
+    - name: Install Linkerd
+      include_role:
+        name: linkerd
+
+    - name: Install Monitoring Stack
+      include_role:
+        name: monitoring
+
+    - name: Install Logging Stack
+      include_role:
+        name: logging
+
+    - name: Install Velero + MinIO
+      include_role:
+        name: velero_minio

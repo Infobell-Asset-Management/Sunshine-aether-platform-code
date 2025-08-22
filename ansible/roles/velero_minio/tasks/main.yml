@@ -1,0 +1,12 @@
+---
+- name: Create minio namespace
+  shell: kubectl create namespace minio --kubeconfig /etc/kubernetes/admin.conf || true
+
+- name: Apply MinIO manifests
+  shell: kubectl apply -f /opt/aether/manifests/minio/ --kubeconfig /etc/kubernetes/admin.conf
+
+- name: Create velero namespace
+  shell: kubectl create namespace velero --kubeconfig /etc/kubernetes/admin.conf || true
+
+- name: Apply Velero manifests
+  shell: kubectl apply -f /opt/aether/manifests/velero/ --kubeconfig /etc/kubernetes/admin.conf

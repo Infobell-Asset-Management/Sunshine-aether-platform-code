@@ -1,0 +1,17 @@
+hostname: 192.168.1.9
+http:
+  port: 80
+https:
+  port: 443
+  certificate: /opt/harbor/ssl/harbor.crt
+  private_key: /opt/harbor/ssl/harbor.key
+harbor_admin_password: <STRONG_PASSWORD>
+database:
+  password: changeit
+data_volume: /data
+log:
+  level: info
+  rotate_count: 50
+  rotate_size: 200M
+  location: /var/log/harbor
+_version: 2.9.0

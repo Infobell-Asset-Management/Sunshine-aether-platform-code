@@ -1,0 +1,5 @@
+server = "https://{{ harbor_host }}"
+
+[host."https://{{ harbor_host }}"]
+  capabilities = ["pull", "resolve", "push"]
+  skip_verify = true

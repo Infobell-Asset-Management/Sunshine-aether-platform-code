@@ -1,0 +1,68 @@
+---
+- name: Bastion Preparation
+  hosts: bastion
+  become: yes
+  vars_files:
+    - ../group_vars/all.yml
+  roles:
+    - apt_mirror
+    - harbor
+  tasks:
+    - name: Install base tools
+      apt:
+        name:
+          - curl
+          - git
+          - docker.io
+          - docker-compose
+          - ansible
+          - apache2
+        state: present
+        update_cache: yes
+
+    - name: Enable and start Docker
+      systemd:
+        name: docker
+        enabled: yes
+        state: started
+
+    - name: Set up apt-mirror
+      include_role:
+        name: apt_mirror
+
+    - name: Install Harbor
+      include_role:
+        name: harbor
+
+    - name: Install kubectl
+      apt:
+        name: kubectl
+        state: present
+
+    - name: Install kubeadm
+      apt:
+        name: kubeadm
+        state: present
+
+    - name: Install helm
+      shell: |
+        curl https://baltocdn.com/helm/signing.asc | apt-key add -
+        apt-get install apt-transport-https --yes
+        echo "deb https://baltocdn.com/helm/stable/debian/ all main" | tee /etc/apt/sources.list.d/helm-stable-debian.list
+        apt-get update
+        apt-get install helm -y
+      args:
+        executable: /bin/bash
+
+    - name: Create Harbor project (assettrack)
+      uri:
+        url: "https://{{ harbor_host }}/api/v2.0/projects"
+        method: POST
+        user: "{{ harbor_username }}"
+        password: "{{ harbor_password }}"
+        body_format: json
+        body: '{"project_name": "{{ harbor_project }}", "public": false}'
+        validate_certs: false
+        status_code: 201
+      register: harbor_project_create
+      ignore_errors: yes

@@ -1,0 +1,44 @@
+---
+- name: Configure Controller and Worker Nodes
+  hosts: k8s
+  become: yes
+  vars_files:
+    - ../group_vars/all.yml
+  roles:
+    - containerd
+  tasks:
+    - name: Point APT sources to local mirror
+      copy:
+        dest: /etc/apt/sources.list
+        content: |
+          deb {{ apt_mirror_url }} jammy main restricted universe multiverse
+          deb {{ apt_mirror_url }} jammy-updates main restricted universe multiverse
+          deb {{ apt_mirror_url }} jammy-security main restricted universe multiverse
+
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install containerd and dependencies
+      apt:
+        name:
+          - containerd
+          - apt-transport-https
+          - ca-certificates
+          - curl
+        state: present
+
+    - name: Configure containerd
+      include_role:
+        name: containerd
+
+    - name: Restart containerd
+      systemd:
+        name: containerd
+        state: restarted
+        enabled: yes
+
+    - name: Verify crictl info
+      shell: crictl info
+      register: crictl_info
+      ignore_errors: yes

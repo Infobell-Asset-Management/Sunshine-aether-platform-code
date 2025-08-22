@@ -1,0 +1,28 @@
+---
+- name: Generate containerd config
+  shell: |
+    containerd config default > /etc/containerd/config.toml
+  args:
+    creates: /etc/containerd/config.toml
+
+- name: Configure containerd for Harbor
+  template:
+    src: config.toml.j2
+    dest: /etc/containerd/config.toml
+
+- name: Create certs directory for Harbor
+  file:
+    path: /etc/containerd/certs.d/{{ harbor_host }}
+    state: directory
+    mode: 0755
+
+- name: Copy Harbor CA cert
+  copy:
+    src: /opt/harbor/ssl/harbor.crt
+    dest: /etc/containerd/certs.d/{{ harbor_host }}/ca.crt
+    remote_src: yes
+
+- name: Configure hosts.toml for Harbor
+  template:
+    src: hosts.toml.j2
+    dest: /etc/containerd/certs.d/{{ harbor_host }}/hosts.toml

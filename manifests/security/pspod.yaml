@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: security-context-example
+  namespace: assettrack
+spec:
+  containers:
+    - name: example
+      image: busybox
+      command: ["sleep", "3600"]
+      securityContext:
+        runAsNonRoot: true
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        seccompProfile:
+          type: RuntimeDefault

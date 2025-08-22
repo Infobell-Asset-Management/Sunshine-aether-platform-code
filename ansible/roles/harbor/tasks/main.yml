@@ -1,0 +1,23 @@
+---
+- name: Download Harbor installer
+  get_url:
+    url: https://github.com/goharbor/harbor/releases/download/v2.9.0/harbor-online-installer-v2.9.0.tgz
+    dest: /tmp/harbor-online-installer-v2.9.0.tgz
+
+- name: Extract Harbor installer
+  unarchive:
+    src: /tmp/harbor-online-installer-v2.9.0.tgz
+    dest: /opt/
+    remote_src: yes
+
+- name: Generate Harbor config
+  template:
+    src: harbor.yml.j2
+    dest: /opt/harbor/harbor.yml
+
+- name: Install Harbor
+  shell: |
+    cd /opt/harbor
+    ./install.sh
+  args:
+    chdir: /opt/harbor

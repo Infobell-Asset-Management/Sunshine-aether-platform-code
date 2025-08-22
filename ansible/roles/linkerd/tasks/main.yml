@@ -1,0 +1,6 @@
+---
+- name: Create linkerd namespace
+  shell: kubectl create namespace linkerd --kubeconfig /etc/kubernetes/admin.conf || true
+
+- name: Install Linkerd CRDs and control plane
+  shell: kubectl apply -f /opt/aether/manifests/linkerd/ --kubeconfig /etc/kubernetes/admin.conf

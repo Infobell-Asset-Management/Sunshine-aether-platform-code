@@ -1,0 +1,69 @@
+---
+- name: Bootstrap Kubernetes Cluster
+  hosts: controller
+  become: yes
+  vars_files:
+    - ../group_vars/all.yml
+  roles:
+    - kubeadm
+  tasks:
+    - name: Copy kubeadm config
+      copy:
+        src: ../../kubeadm/init-config.yaml
+        dest: /tmp/init-config.yaml
+
+    - name: Initialize Kubernetes cluster
+      shell: kubeadm init --config /tmp/init-config.yaml
+      args:
+        creates: /etc/kubernetes/admin.conf
+
+    - name: Set up kubeconfig for infobell
+      become_user: infobell
+      shell: |
+        mkdir -p /home/infobell/.kube
+        cp /etc/kubernetes/admin.conf /home/infobell/.kube/config
+        chown infobell:infobell /home/infobell/.kube/config
+
+    - name: Copy kubeconfig to Bastion
+      fetch:
+        src: /home/infobell/.kube/config
+        dest: ../../kubeconfig
+        flat: yes
+
+    - name: Generate join command
+      shell: kubeadm token create --print-join-command
+      register: join_cmd
+
+    - name: Save join command
+      copy:
+        dest: /tmp/kubeadm_join.sh
+        content: |
+          #!/bin/bash
+          {{ join_cmd.stdout }}
+
+- name: Join Worker Nodes
+  hosts: workers
+  become: yes
+  tasks:
+    - name: Copy join command from controller
+      fetch:
+        src: /tmp/kubeadm_join.sh
+        dest: /tmp/kubeadm_join.sh
+        flat: yes
+      delegate_to: 192.168.1.5
+
+    - name: Join the cluster
+      shell: bash /tmp/kubeadm_join.sh
+      args:
+        creates: /etc/kubernetes/kubelet.conf
+
+- name: Install CNI (Calico)
+  hosts: controller
+  become: yes
+  tasks:
+    - name: Apply Calico CNI
+      shell: kubectl apply -f /opt/aether/kubeadm/cni-calico.yaml --kubeconfig /etc/kubernetes/admin.conf
+
+    - name: Remove master taint (if needed)
+      shell: kubectl taint nodes --all node-role.kubernetes.io/control-plane- || true
+      ignore_errors: yes

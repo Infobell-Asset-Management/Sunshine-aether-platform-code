@@ -1,0 +1,6 @@
+---
+- name: Create logging namespace
+  shell: kubectl create namespace logging --kubeconfig /etc/kubernetes/admin.conf || true
+
+- name: Apply Loki and Promtail manifests
+  shell: kubectl apply -f /opt/aether/manifests/logging/ --kubeconfig /etc/kubernetes/admin.conf
