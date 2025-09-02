@@ -22,7 +22,7 @@ spec:
         fsGroup: 2000
       containers:
         - name: processor
-          image: 192.168.1.9/assettrack/processor:<TAG>
+          image: 192.168.0.70/assettrack/processor:<TAG>
           ports:
             - containerPort: 8080
           livenessProbe:

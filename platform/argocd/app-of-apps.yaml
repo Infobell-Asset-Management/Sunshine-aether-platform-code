@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'git@github.com:<GITHUB_ORG>/aether-k8s-manifests.git'
+    repoURL: 'git@github.com:Infobell-Asset-Management/Sunshine-aether-k8s-manifests'
     targetRevision: HEAD
     path: .
   destination:

@@ -50,7 +50,7 @@
         src: /tmp/kubeadm_join.sh
         dest: /tmp/kubeadm_join.sh
         flat: yes
-      delegate_to: 192.168.1.5
+      delegate_to: 192.168.0.109
 
     - name: Join the cluster
       shell: bash /tmp/kubeadm_join.sh

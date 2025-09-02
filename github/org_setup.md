@@ -2,11 +2,11 @@
 
 1. Create a new GitHub organization: `<GITHUB_ORG>`
 2. Invite users:
-   - engineerA@infobell.com
-   - engineerB@infobell.com
+   - DasariAkhil.ShankarRao@infobellit.com
+   - Abhishek.Koduru@infobellit.com
 3. Create two private repositories:
-   - `aether-platform-code`
-   - `aether-k8s-manifests`
+   - `Sunshine-aether-k8s-manifests`
+   - `Sunshine-aether-platform-code`
 4. Set branch protection rules:
    - Require PR review before merge
    - Require status checks to pass

@@ -1,7 +1,7 @@
 apiVersion: kubeadm.k8s.io/v1beta3
 kind: ClusterConfiguration
 kubernetesVersion: "v1.29.0"
-imageRepository: "192.168.1.9/library"
+imageRepository: "192.168.0.70/library"
 clusterName: assettrack
 networking:
   podSubnet: "192.168.0.0/16"

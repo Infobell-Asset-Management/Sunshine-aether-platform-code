@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Engineer A: Air-Gapped Platform Bootstrap Script
-# Run as infobell on Bastion (192.168.1.9) from /home/infobell/assetTrack/aether
+# Run as infobell on Bastion (192.168.0.70) from /home/infobell/assetTrack/aether
 
 # 1. Run Ansible Playbooks
 ansible-playbook -i inventories/hosts.ini ansible/playbooks/01_bastion_prep.yml
@@ -13,7 +13,7 @@ ansible-playbook -i inventories/hosts.ini ansible/playbooks/04_platform_tools.ym
 # 2. Preload and Push Required Images to Harbor
 # Kubernetes core images
 K8S_VERSION="v1.29.0"
-HARBOR_REGISTRY="192.168.1.9/assettrack"
+HARBOR_REGISTRY="192.168.0.70/assettrack"
 
 kubeadm config images list --kubernetes-version $K8S_VERSION | while read img; do
   IMG_NAME=$(basename $img)

@@ -1,5 +1,5 @@
-apt_mirror_url: "http://192.168.1.9/mirror"
-harbor_host: "192.168.1.9"
+apt_mirror_url: "http://192.168.0.70/mirror"
+harbor_host: "192.168.0.70"
 harbor_project: "assettrack"
 harbor_username: "admin"
 harbor_password: "Harbor12345"

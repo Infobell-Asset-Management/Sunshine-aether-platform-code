@@ -10,8 +10,8 @@ This repository contains all infrastructure and platform automation for the air-
 
 ## Acceptance Criteria
 
-- All nodes use APT mirror at `http://192.168.1.9/mirror`.
-- All images are pulled from `https://192.168.1.9` (Harbor); containerd trusts Harbor's cert.
+- All nodes use APT mirror at `http://192.168.0.70/mirror`.
+- All images are pulled from `https://192.168.0.70` (Harbor); containerd trusts Harbor's cert.
 - `kubectl get nodes` shows 3 Ready nodes.
 - ArgoCD shows the app synced from `aether-k8s-manifests`.
 - Linkerd sidecars are injected and mTLS is active for app namespace.
@@ -28,8 +28,8 @@ This repository contains all infrastructure and platform automation for the air-
    # Example for Kubernetes images
    kubeadm config images list --kubernetes-version v1.29.0
    docker pull <UPSTREAM_IMAGE>
-   docker tag <UPSTREAM_IMAGE> 192.168.1.9/assettrack/<IMAGE_NAME>:<TAG>
-   docker push 192.168.1.9/assettrack/<IMAGE_NAME>:<TAG>
+   docker tag <UPSTREAM_IMAGE> 192.168.0.70/assettrack/<IMAGE_NAME>:<TAG>
+   docker push 192.168.0.70/assettrack/<IMAGE_NAME>:<TAG>
    ```
 
 2. **Preload all required images:**
@@ -39,8 +39,8 @@ This repository contains all infrastructure and platform automation for the air-
 
 3. **Push to Harbor:**
    ```bash
-   docker login https://192.168.1.9 -u admin -p <STRONG_PASSWORD>
-   docker push 192.168.1.9/assettrack/<IMAGE>:<TAG>
+   docker login https://192.168.0.70 -u admin -p <STRONG_PASSWORD>
+   docker push 192.168.0.70/assettrack/<IMAGE>:<TAG>
    ```
 
 ---
@@ -65,8 +65,8 @@ This repository contains all infrastructure and platform automation for the air-
 3. **Ship App:**
    ```bash
    cd app/processor-service
-   docker build -t 192.168.1.9/assettrack/processor:<TAG> .
-   docker push 192.168.1.9/assettrack/processor:<TAG>
+   docker build -t 192.168.0.70/assettrack/processor:<TAG> .
+   docker push 192.168.0.70/assettrack/processor:<TAG>
    # Bump image tag in aether-k8s-manifests repo, commit, push
    # ArgoCD will sync automatically
    kubectl -n argocd get applications
