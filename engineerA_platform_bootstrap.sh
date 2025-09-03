@@ -32,12 +32,32 @@ for IMG in argocd argocd-repo-server argocd-server argocd-application-controller
   echo "[INFO] Please manually pull, tag, and push $IMG as needed."
 done
 
-# Sample app image
-cd app/processor-service
-TAG="v0.1.0"
-docker build -t $HARBOR_REGISTRY/processor:$TAG .
-docker push $HARBOR_REGISTRY/processor:$TAG
-cd -
+# Application images (all microservices)
+echo "[INFO] Building and pushing AssetTrack application services..."
+cd ../aether-apps  # Navigate to aether-apps directory
+TAG="v1.0.0"
+
+# Login to Harbor
+docker login https://192.168.0.70 -u admin -p Harbor12345 || echo "[WARN] Docker login failed, ensure credentials are correct"
+
+# Build and push all services
+for service in agent-service collector-service processor-service api-service webapp-ui notification-service; do
+  echo "[INFO] Building $service..."
+  cd app/${service}
+
+  # Build the image
+  if docker build -t $HARBOR_REGISTRY/${service}:$TAG .; then
+    echo "[INFO] Pushing $service to Harbor..."
+    docker push $HARBOR_REGISTRY/${service}:$TAG
+    echo "[SUCCESS] Pushed $HARBOR_REGISTRY/${service}:$TAG"
+  else
+    echo "[ERROR] Failed to build $service"
+  fi
+
+  cd ../..
+done
+
+cd ../aether  # Return to aether directory
 
 # 3. Cluster Verification
 kubectl get nodes -o wide
